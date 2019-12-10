@@ -3,7 +3,7 @@ package frc.lib.pathfinder.kinematics;
 import java.util.ArrayList;
 
 public class SmoothVelocity {
-	public static double smoothWeightB = 0.94;
+	public static double smoothWeightB = 0.82;
     public static double dataWeightA = 1 - smoothWeightB;
     public static double tolerance = 0.001;
     public static double pastVelocity = 0;

@@ -93,12 +93,16 @@ public static void createDataSet(){
 
 	//Add some points to the array
 
-	   addPoint(0, 0);
+	addPoint(0, 0);
+		
+	addPoint(2, 0);
 
-	   addPoint(6.5, 0);
+	addPoint(2, 5.9);
 
+	addPoint(5, 5.9);
+	// addPoint(4, 3.32);
 
-
+	// addPoint(7, 3.32);
 
 	   //Add (points.length - 1) vectors to appropriate the slope 
 	   for(int i = 0; i < newPoints.size() - 1; i++) {

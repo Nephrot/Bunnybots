@@ -9,8 +9,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.autonomous.LeftPath;
 import frc.robot.commands.chassis.FollowPath;
-
+import frc.robot.commands.shooter.DeliverGoalHigh;
+import frc.robot.commands.shooter.DeliverGoalLow;
+import frc.robot.commands.shooter.ShootForATime;
+import frc.robot.commands.misc.BlinkForATime;
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -48,7 +52,14 @@ public class OI {
   public static final XboxController operatorController = new XboxController(RobotMap.operatorPort);
 
   public static final Button followPath = new JoystickButton(driverController, RobotMap.YButton);
+  public static final Button deliverHighGoal = new JoystickButton(driverController, RobotMap.AButton);
+  public static final Button deliverLowGoal = new JoystickButton(driverController, RobotMap.BButton);
+  public static final Button shootForATime = new JoystickButton(driverController, RobotMap.XButton);
+
   public OI() {
-    followPath.whenPressed(new FollowPath());
+    followPath.whenPressed(new LeftPath());
+    deliverLowGoal.whileHeld(new DeliverGoalLow());
+    deliverHighGoal.whileHeld(new DeliverGoalHigh());
+    shootForATime.whenPressed(new BlinkForATime(3));
   }
 }

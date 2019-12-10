@@ -13,7 +13,16 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.chassis.Drivetrain;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.shooter.Shooter;
 
+import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI;
+
+import frc.robot.subsystems.feeder.Feeder;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -22,9 +31,15 @@ import frc.robot.subsystems.chassis.Drivetrain;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static OI m_oi;
-  public static Drivetrain m_drivetrain;
 
+  public static AHRS m_navX;
+  public static Drivetrain m_drivetrain;
+  public static Shooter m_shooter;
+  public static Feeder m_feeder;
+  public static Vision m_limelight;
+  public static OI m_oi;
+
+  
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -34,10 +49,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    try {
+			m_navX = new AHRS(SPI.Port.kMXP, (byte) 200);
+		} catch (RuntimeException e) {
+			DriverStation.reportError("NAVX ERROR: " + e.getMessage(), true);
+    }
+
     m_drivetrain = new Drivetrain();
+    m_shooter = new Shooter();
+    m_feeder = new Feeder();
+    m_limelight = new Vision();
     m_oi = new OI();
+    
+    
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+    SmartDashboard.putNumber("Heading ", 0);
+    m_drivetrain.resetDrivetrain();
   }
 
   /**
@@ -79,6 +108,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    SmartDashboard.putNumber("Left Encoder Values", Robot.m_drivetrain.leftMotorA.getEncoder().getPosition());
+    Robot.m_drivetrain.leftMotorA.getEncoder().setPosition(0);
+    Robot.m_drivetrain.leftMotorB.getEncoder().setPosition(0);
+    SmartDashboard.putNumber("Right Encoder Values", Robot.m_drivetrain.rightMotorA.getEncoder().getPosition());
+    Robot.m_drivetrain.rightMotorA.getEncoder().setPosition(0);
+    Robot.m_drivetrain.rightMotorB.getEncoder().setPosition(0);
+    SmartDashboard.putNumber("Distance Covered (Right Wheels) (In Feet)", Robot.m_drivetrain.distanceInFeet(Robot.m_drivetrain.rightMotorA.getEncoder().getPosition()));
+    SmartDashboard.putNumber("Distance Covered (Left Wheels) (In Feet)", Robot.m_drivetrain.distanceInFeet(Robot.m_drivetrain.leftMotorA.getEncoder().getPosition()));
+    
+    SmartDashboard.putNumber("Output (Left Wheels)", 0);
+    SmartDashboard.putNumber("Output (Right Wheels)", 0);
+    SmartDashboard.putNumber("Heading ", 0);
+    SmartDashboard.putNumber("Angle ", Robot.m_navX.getAngle());
+
     m_autonomousCommand = m_chooser.getSelected();
 
     /*
@@ -108,6 +151,12 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    
+    Robot.m_drivetrain.leftMotorA.setIdleMode(CANSparkMax.IdleMode.kCoast);
+		Robot.m_drivetrain.leftMotorB.setIdleMode(CANSparkMax.IdleMode.kCoast);
+		Robot.m_drivetrain.rightMotorA.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    Robot.m_drivetrain.rightMotorB.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    
     SmartDashboard.putNumber("Left Encoder Values", Robot.m_drivetrain.leftMotorA.getEncoder().getPosition());
     Robot.m_drivetrain.leftMotorA.getEncoder().setPosition(0);
     Robot.m_drivetrain.leftMotorB.getEncoder().setPosition(0);
@@ -116,8 +165,12 @@ public class Robot extends TimedRobot {
     Robot.m_drivetrain.rightMotorB.getEncoder().setPosition(0);
     SmartDashboard.putNumber("Distance Covered (Right Wheels) (In Feet)", Robot.m_drivetrain.distanceInFeet(Robot.m_drivetrain.rightMotorA.getEncoder().getPosition()));
     SmartDashboard.putNumber("Distance Covered (Left Wheels) (In Feet)", Robot.m_drivetrain.distanceInFeet(Robot.m_drivetrain.leftMotorA.getEncoder().getPosition()));
+    
     SmartDashboard.putNumber("Output (Left Wheels)", 0);
     SmartDashboard.putNumber("Output (Right Wheels)", 0);
+    SmartDashboard.putNumber("Heading ", 0);
+    SmartDashboard.putNumber("Angle ", Robot.m_navX.getAngle());
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -132,6 +185,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Right Encoder Values", Robot.m_drivetrain.rightMotorA.getEncoder().getPosition());
     SmartDashboard.putNumber("Distance Covered (Right Wheels) (In Feet)", Robot.m_drivetrain.distanceInFeet(Robot.m_drivetrain.rightMotorA.getEncoder().getPosition()));
     SmartDashboard.putNumber("Distance Covered (Left Wheels) (In Feet)", Robot.m_drivetrain.distanceInFeet(Robot.m_drivetrain.leftMotorA.getEncoder().getPosition()));
+    SmartDashboard.putNumber("Angle ", Robot.m_navX.getAngle());
+    m_limelight.printTelemetry();
     Scheduler.getInstance().run();
   }
   
@@ -140,5 +195,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  public void printAutonomousTelemetry() {
+    
   }
 }

@@ -25,21 +25,45 @@ public class RobotMap {
   // If you are using multiple modules, make sure to define both the port
   // number and the module. For example you with a rangefinder:
   // public static int rangefinderPort = 1;
-  // public static int rangefinderModule = 1;
 
   //Chassis
-  public static final int leftMotorAPort = 1;
-  public static final int leftMotorBPort = 2;
-  public static final int rightMotorAPort = 3;
-  public static final int rightMotorBPort = 4;
+  public static final int leftMotorAPort = 4;
+  public static final int leftMotorBPort = 5;
+  public static final int rightMotorAPort = 2;
+  public static final int rightMotorBPort = 3;
   public static final MotorType brushless = MotorType.kBrushless;
   public static final MotorType brushed = MotorType.kBrushed;
   public static final double ticksInARevolution = 10.659;
   public static final double wheelDiameter = 6;
-  public static final double pValue = 0.024;
+  public static final double pValue = 0.028;
   public static final double iValue = 0;
   public static final double dValue = 0;
-  public static final double vValue = 0.078;
+  public static final double vValue = 0.08;
+  public static final double hValue = -0.01;
+
+  //Shooter
+  public static final double kPValue = 5e-5;
+  public static final double kIValue = 1e-6;
+  public static final double kDValue = 0;
+  public static final double kIZValue = 0;
+  public static final double maxOutput = 0.8;
+  public static final double minOutput = -0.8;
+  public static final double maxRPM = 5700;
+  public static final int shooterMotorPort = 1;
+  public static final double lowGoalSpeed = 1300;
+  public static final double highGoalSpeed = 2000;
+
+  //Vision 
+  public static final double limelightToTarget = 25.7;
+  public static final double vPValue = 0.1;
+  public static final double vPAltValue = 0.023;
+  public static final double vFFValue = 0.35;
+  public static final double vMaxOutput = 0.5;
+  public static final double highGoalDistance = 74.4;
+  
+  //Misc
+  public static final int feederMotorPort = 6;
+  public static final int intakeMotorPort = 7;
 
   //Controller
   public static final int AButton = 1;

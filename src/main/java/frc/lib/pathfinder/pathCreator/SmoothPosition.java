@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import frc.lib.util.Point;
 
 public class SmoothPosition {
-	public static double smoothWeightB = 0.79;
+	public static double smoothWeightB = 0.93;
     public static double dataWeightA = 1 - smoothWeightB;
     public static double tolerance = 0.001;
     public static double pastLocationX = 0;
